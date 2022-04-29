@@ -66,10 +66,9 @@ const nextConfig: NextConfig = {
     pagesBufferLength: 2,
   },
   modern: false,
-  // reactStrictMode: true,
+  reactStrictMode: true,
   experimental: {
-    // reactMode: 'concurrent',
-    // reactRoot: true,
+    reactRoot: true,
     scrollRestoration: true,
   },
   swcMinify: true,
