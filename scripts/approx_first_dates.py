@@ -32,5 +32,5 @@ cluster_first_dates = {
 }
 
 first_date_exceptions = {
-    "21AS478": ["India/MP-NCDC-2509230/2020"], #Delta
+    "EPI_ISL_12954196": "2021-08-02",
 }

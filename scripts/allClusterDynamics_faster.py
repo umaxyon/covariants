@@ -121,6 +121,14 @@ def get_summary(cluster_meta, observed_countries, division=False):
 
     return country_info, country_dates
 
+def include_exception_sequences(before_date):
+    # Exclude all sequences from before_date that are in first_date_exceptions
+    # Make sure it works for gisaid_epi_isl and strain name
+    for key in ["gisaid_epi_isl", "strain"]:
+        for strain in first_date_exceptions:
+            if strain in before_date[key] and before_date[before_date[key] == strain]["date"].strftime("%Y-%m-%d") == first_date_exceptions[strain]:
+                before_date = before_date[before_date[key] != strain]
+
 def print_date_alerts(clus):
     print(clus)
     print(f"Expected date: {cluster_first_dates[clus]['first_date']}")
@@ -379,6 +387,8 @@ clus_dates = {clusters[clus]["display_name"] : datetime.datetime.strptime(cluste
 
 # Search for sequences with too early dates - only for Nextstrain_clades
 before_date = meta[[date < clus_dates[clade] if clade in clus_dates else False for date,clade in zip(meta["date_formatted"], meta["Nextstrain_clade"])]]
+
+before_date = include_exception_sequences(before_date)
 
 # Sort by clus
 alert_first_date_quick = {clus : before_date[before_date["Nextstrain_clade"] == clusters[clus]["display_name"]] for clus in clus_to_run if clusters[clus]["display_name"] in before_date["Nextstrain_clade"].values}
@@ -667,6 +677,7 @@ for clus in clus_to_run:
             alert = f"ALERT: sequence date of {firstseqdate}"
 
             before_date = cluster_meta[cluster_meta["date_formatted"].apply(lambda x: x < clus_start)]
+            before_date = include_exception_sequences(before_date)
 
         if alert:
             alert_first_date[clus] = before_date
